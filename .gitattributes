@@ -1,0 +1,25 @@
+# Normalize line endings in the repository (LF), regardless of the
+# machine-level core.autocrlf setting.
+* text=auto eol=lf
+
+# Explicitly binary files (never transformed)
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.webp binary
+*.ico  binary
+*.pdf  binary
+*.woff binary
+*.woff2 binary
+*.ttf  binary
+*.otf  binary
+*.eot  binary
+*.zip  binary
+*.docx binary
+*.xlsx binary
+
+# PowerShell scripts may keep CRLF in the working tree
+*.ps1 text eol=crlf
+*.cmd text eol=crlf
+*.bat text eol=crlf

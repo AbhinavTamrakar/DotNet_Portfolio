@@ -1,0 +1,7 @@
+@Portfolio.Api_HostAddress = https://localhost:7162
+
+### OpenAPI document (development only)
+GET {{Portfolio.Api_HostAddress}}/openapi/v1.json
+Accept: application/json
+
+###
