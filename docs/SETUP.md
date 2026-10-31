@@ -122,11 +122,14 @@ Production uses environment variables or the host's secret store.
 dotnet restore backend/Portfolio.sln
 dotnet build backend/Portfolio.sln
 
-# local secrets (Phase 3)
-dotnet user-secrets init --project backend/Portfolio.Api
+# local secrets (never committed; user-secrets is already initialized)
 dotnet user-secrets set "ConnectionStrings:DefaultConnection" `
   "Server=127.0.0.1;Port=3306;Database=personal_portfolio;User=portfolio_app;Password=<STRONG_PASSWORD>;SslMode=Preferred;" `
   --project backend/Portfolio.Api
+
+# administrator created on startup only when both values are present
+dotnet user-secrets set "Admin:Email" "<ADMIN_EMAIL>" --project backend/Portfolio.Api
+dotnet user-secrets set "Admin:Password" "<STRONG_ADMIN_PASSWORD>" --project backend/Portfolio.Api
 
 dotnet run --project backend/Portfolio.Api
 ```
@@ -141,9 +144,19 @@ Use the local tool manifest (already installed):
 
 ```powershell
 dotnet tool restore
-dotnet dotnet-ef migrations add InitialCreate --project backend/Portfolio.Infrastructure --startup-project backend/Portfolio.Api
 dotnet dotnet-ef database update --project backend/Portfolio.Infrastructure --startup-project backend/Portfolio.Api
 ```
+
+The `InitialCreate` migration already exists in
+`backend/Portfolio.Infrastructure/Persistence/Migrations`. Only create a new migration after
+changing the model:
+
+```powershell
+dotnet dotnet-ef migrations add <MigrationName> --project backend/Portfolio.Infrastructure --startup-project backend/Portfolio.Api --output-dir Persistence/Migrations
+```
+
+The migration uses the `DefaultConnection` from user-secrets. The API refuses to start without
+a configured connection string, which prevents accidentally running against an unknown database.
 
 Pinned: EF Core **10.0.12**, `dotnet-ef` **10.0.12**, provider **10.0.12**.
 Do not install Pomelo or a second MySQL provider, and do not mix EF Core 9/10 packages.

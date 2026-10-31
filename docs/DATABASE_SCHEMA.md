@@ -1,6 +1,7 @@
 # Database Schema
 
-**Status: design only. No tables or migrations exist yet (Phase 3 will create them).**
+**Status: implemented in EF Core 10.0.12. The `InitialCreate` migration is generated and its
+MySQL DDL has been reviewed; it has not yet been applied to the live database.**
 
 Database: **MySQL Server 9.7.1**
 Schema name: `personal_portfolio`
@@ -263,4 +264,14 @@ AspNetUsers * ─── * AspNetRoles    (standard Identity tables)
 
 | Migration | Status |
 |---|---|
-| `InitialCreate` | not created yet — planned for Phase 3 |
+| `20261031063454_InitialCreate` | generated 2026-10-31 — pending `database update` |
+
+### Provider mapping notes
+
+- `DateOnly` / `DateOnly?` map to MySQL `date`.
+- `DateTime` audit and publication columns map to `datetime(6)`; values are normalized to UTC
+  by a value converter and the `SaveChanges` audit hook.
+- Enums are stored as strings (`Blogs.Status` → `varchar(30)`).
+- ASP.NET Core Identity uses the provider defaults: `AspNetUsers.Id` / `AspNetRoles.Id` are
+  `varchar(255)` and booleans are `tinyint(1)`.
+- All tables are InnoDB with the database default `utf8mb4` / `utf8mb4_0900_ai_ci`.

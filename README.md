@@ -62,15 +62,20 @@ Project source and project data live on `E:`. Tool caches (npm, NuGet) remain on
 ## Current status
 
 **Phase 2 — Project initialization: complete.**
+**Phase 3 — Backend foundation: in progress (migration generated, pending database apply).**
 
 - [x] Repository initialized on `main`
 - [x] Next.js frontend scaffolded and production build verified
 - [x] ASP.NET Core solution with four projects and project references
 - [x] Local `dotnet-ef` tool manifest
 - [x] Root `.gitignore`, `.gitattributes`, README and project documentation
-- [ ] Phase 3 — backend foundation (EF Core, MySQL, Identity, initial migration)
+- [x] EF Core 10.0.12 + Oracle MySQL provider + Identity packages
+- [x] Domain entities, `PortfolioDbContext`, entity configurations, UTC audit timestamps
+- [x] ASP.NET Core Identity wired to EF Core; secure admin seeder
+- [x] `InitialCreate` migration generated and MySQL DDL reviewed
+- [ ] Apply the migration to `personal_portfolio` (needs the `portfolio_app` secret)
 
-No application features (public pages, APIs, authentication) are implemented yet.
+No application features (public pages, APIs, authentication endpoints) are implemented yet.
 See [docs/PROJECT_PLAN.md](docs/PROJECT_PLAN.md) for the phase tracker.
 
 ---
@@ -99,12 +104,19 @@ PowerShell execution policy blocks `npm.ps1` on this machine, so use **`npm.cmd`
 ### Backend
 
 ```powershell
-# One-time local secrets (Phase 3+; never committed)
-dotnet user-secrets init --project backend/Portfolio.Api
+# One-time local secrets (never committed)
 dotnet user-secrets set "ConnectionStrings:DefaultConnection" "<connection-string>" --project backend/Portfolio.Api
+dotnet user-secrets set "Admin:Email" "<admin-email>" --project backend/Portfolio.Api
+dotnet user-secrets set "Admin:Password" "<strong-admin-password>" --project backend/Portfolio.Api
+
+# Apply the generated migration once the database and account exist
+dotnet dotnet-ef database update --project backend/Portfolio.Infrastructure --startup-project backend/Portfolio.Api
 
 dotnet run --project backend/Portfolio.Api
 ```
+
+The administrator is seeded at startup only when `Admin:Email` and `Admin:Password` are set;
+no credentials are hardcoded.
 
 - HTTPS: `https://localhost:7162`
 - HTTP: `http://localhost:5213`

@@ -2,7 +2,7 @@
 
 This document tracks implementation phases. It is updated as work progresses.
 
-**Last updated:** 2026-10-31 (Phase 2 complete)
+**Last updated:** 2026-10-31 (Phase 3 in progress)
 
 ---
 
@@ -57,16 +57,17 @@ author management, PostgreSQL.
 - [x] Documentation: project plan, setup, database schema, API documentation
 - [x] Initial commit (no push)
 
-### Phase 3 — Backend foundation — NOT STARTED
+### Phase 3 — Backend foundation — IN PROGRESS
 
-- [ ] Install EF Core 10.0.12 + Oracle provider + Identity packages
-- [ ] Configure `DefaultConnection` via user-secrets
-- [ ] Create `PortfolioDbContext` and entity configurations
-- [ ] Define all entities and relationships from `docs/DATABASE_SCHEMA.md`
-- [ ] Configure ASP.NET Core Identity
-- [ ] Create initial migration and apply it
-- [ ] Verify database connectivity and migration history
-- [ ] Seed one administrator without hardcoded credentials
+- [x] Install EF Core 10.0.12 + Oracle provider + Identity packages
+- [ ] Configure `DefaultConnection` via user-secrets (owner action; value never committed)
+- [x] Create `PortfolioDbContext` and entity configurations
+- [x] Define all entities and relationships from `docs/DATABASE_SCHEMA.md`
+- [x] Configure ASP.NET Core Identity (EF stores, password and lockout policy)
+- [x] Create the `InitialCreate` migration (DDL reviewed)
+- [ ] Apply the migration and verify connectivity / migration history
+- [x] Implement administrator seeding without hardcoded credentials
+- [ ] Verify the seeded administrator against the live database
 
 ### Phase 4 — Public APIs — NOT STARTED
 
@@ -115,5 +116,7 @@ author management, PostgreSQL.
 
 - [ ] Create `personal_portfolio` database and `portfolio_app` user in Workbench
       (SQL in `docs/SETUP.md`).
+- [ ] Set `ConnectionStrings:DefaultConnection` in user-secrets with the `portfolio_app` password.
+- [ ] Set `Admin:Email` and `Admin:Password` in user-secrets for administrator seeding.
 - [ ] Trust the ASP.NET Core development HTTPS certificate when requested
       (`dotnet dev-certs https --trust`). Not yet applied — requires owner approval.
